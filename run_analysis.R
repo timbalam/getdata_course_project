@@ -15,6 +15,22 @@ tidyDataTable <- "samsumg_data_means.txt"
 features <- read.table(paste0(dataLocation, featuresTable))
 names(features) <- c("feature_label", "feature")
 
+#Give descriptive feature names
+replace <- list("^t" = "time",
+                "^f" = "frequency",
+                "Acc" = "Accelerometer",
+                "Gyro" = "Gyroscope",
+                "-X" = "XAxis",
+                "-Y" = "YAxis",
+                "-Z" = "ZAxis",
+                "Mag" = "Magnitude",
+                "-mean[(][)]" = "Mean",
+                "-std[(][)]" = "StdDeviation")
+for (name in names(replace)) {
+  features$feature <- gsub(name, replace[[name]], features$feature)
+}
+
+
 #Activities
 activities <- read.table(paste0(dataLocation, activityLabelsTable))
 names(activities) <- c("activity_label", "activity")
@@ -45,7 +61,9 @@ train$dataset <- "train"
 dataset <- rbind(test, train) #P1
 
 #Mean and standard deviation data
-mean.std.data <- dataset[,grepl('-mean()|-std()|subject_label|activity_label|dataset', names(dataset))] #P2
+mean.cols <- grepl('Mean|StdDeviation|subject_label|activity_label|dataset', names(dataset)) &
+  !grepl('^angle', names(dataset))
+mean.std.data <- dataset[,mean.cols] #P2
 
 #Add activity descriptions
 mean.std.data <- merge(mean.std.data, activities, by = "activity_label") #P3
@@ -54,5 +72,5 @@ mean.std.data <- merge(mean.std.data, activities, by = "activity_label") #P3
 library(reshape2)
 variableMeans <- melt(mean.std.data, 
                       id.vars = c("subject_label", "activity_label", "activity"),
-                      measure.vars = grep("-mean()", names(mean.std.data), value = TRUE))
+                      measure.vars = grep("Mean", names(mean.std.data), value = TRUE))
 write.table(variableMeans, file = tidyDataTable, row.name = FALSE)
