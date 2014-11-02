@@ -5,7 +5,7 @@ Course project for "Getting and Cleaning Data" Coursera course.
 
 This repository contains an R script called run_analysis.R to create a tidy data set. It requires the following dataset to be downloaded and unzipped in the working directory:
 
-[https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip]
+https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
 
 run_analysis.R does the following. 
 
